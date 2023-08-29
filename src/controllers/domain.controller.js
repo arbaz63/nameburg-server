@@ -31,16 +31,15 @@ const getDomainsByCategory = async (req, res) => {
   const { categoryId } = req.params;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
-
   try {
     const totalDomains = await Domain.countDocuments({ categoryId });
     const totalPages = Math.ceil(totalDomains / limit);
-
-    const domains = await Domain.find({ categoryId })
-      .populate("category")
-      .skip((page - 1) * limit)
-      .limit(limit);
-
+    
+    const domains = await Domain.find({ category: categoryId })
+    .populate("category")
+    .skip((page - 1) * limit)
+    .limit(limit);
+    
     res.json({
       domains,
       currentPage: page,
