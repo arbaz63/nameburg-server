@@ -27,6 +27,30 @@ const getDomains = async (req, res) => {
   }
 };
 
+const getDomainsByCategory = async (req, res) => {
+  const { categoryId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+
+  try {
+    const totalDomains = await Domain.countDocuments({ categoryId });
+    const totalPages = Math.ceil(totalDomains / limit);
+
+    const domains = await Domain.find({ categoryId })
+      .populate("category")
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    res.json({
+      domains,
+      currentPage: page,
+      totalPages,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching domains by category" });
+  }
+};
+
 const getDomain = async (req, res) => {
   try {
     const domain = await Domain.findById(req.params.id).populate("category");
@@ -109,6 +133,7 @@ const resetPrice = async (req, res) => {
 
 module.exports = {
   getDomains,
+  getDomainsByCategory,
   getDomain,
   addDomain,
   deleteDomain,

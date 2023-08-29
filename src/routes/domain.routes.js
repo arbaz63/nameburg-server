@@ -6,6 +6,9 @@ const { authenticateToken, isAdmin } = require("../middlewares");
 // Route to get all domain names
 router.get("/", domainController.getDomains);
 
+//Route to get all domain names by category
+router.get("/category/:categoryId", domainController.getDomainsByCategory);
+
 //Route to get single domain
 router.get("/:id", domainController.getDomain);
 
