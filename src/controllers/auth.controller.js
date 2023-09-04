@@ -41,7 +41,7 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -57,7 +57,15 @@ const signIn = async (req, res) => {
       return res.status(401).json({ error: "Email or password is incorrect" });
     }
 
-    const accessToken = jwt.sign(user.toJSON(), process.env.JWT_SECRET);
+    // Set token expiry based on the "rememberMe" option
+    const tokenExpiry = rememberMe ? undefined : '2d'; // 2 days if not remembered
+
+    const accessToken = jwt.sign(
+      user.toJSON(),
+      process.env.JWT_SECRET,
+      { expiresIn: tokenExpiry }
+    );
+
     res.status(200).json({
       id: user._id,
       fullName: user.fullName,

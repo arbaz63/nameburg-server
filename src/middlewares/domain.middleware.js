@@ -37,7 +37,7 @@ const applyFilters = async (req, res, next) => {
     } = req;
 
     //filter by keywords
-    if (keywords.length > 0) {
+    if (keywords.length > 0 && !keywords.includes('All')) {
       query = query.find({ keywords: { $in: keywords } });
     }
 

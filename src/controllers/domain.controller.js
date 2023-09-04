@@ -17,6 +17,7 @@ const getDomains = async (req, res) => {
       domains,
       currentPage: req.page,
       totalPages,
+      totalDomains
     });
   } catch (error) {
     console.error(error);
