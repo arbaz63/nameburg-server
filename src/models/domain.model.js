@@ -25,6 +25,11 @@ const domainSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  sold: {
+    type: Boolean,
+    default: false, // Set the default value to false
+  },
+  keywords: [{ type: String }],
   date: { type: Date, default: Date.now },
 });
 

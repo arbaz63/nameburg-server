@@ -58,15 +58,63 @@ const signIn = async (req, res) => {
     }
 
     const accessToken = jwt.sign(user.toJSON(), process.env.JWT_SECRET);
-    res
-      .status(200)
-      .json({ id: user._id, fullName: user.fullName, accessToken, role: user.role });
+    res.status(200).json({
+      id: user._id,
+      fullName: user.fullName,
+      accessToken,
+      role: user.role,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Route to update user's fullName and/or password
+const updateUser = async (req, res) => {
+  const { oldPassword, newPassword, newFullName, newEmail, newCountry } =
+    req.body;
+  const userId = req.params.id;
+
+  try {
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify the old password
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isOldPasswordValid) {
+      return res.status(401).json({ message: "Old password is incorrect" });
+    }
+
+    // Check if the new email already exists
+    const emailExists = await User.exists({ email: newEmail });
+
+    if (emailExists && user.email !== newEmail) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Update info
+    if (newFullName) user.fullName = newFullName;
+    if (newCountry) user.country = newCountry;
+    user.password = newPassword;
+    user.email = newEmail;
+
+    // Save the updated user
+    await user.save();
+
+    res.status(200).json({ message: "Profile updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 module.exports = {
   signUp,
   signIn,
+  updateUser,
 };

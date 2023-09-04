@@ -25,9 +25,9 @@ app.use(cors());
 
 app.use("/api/v1", routes);
 
-cron.schedule('* * * * *', () => {
-  updatePrice()
-});
+// cron.schedule('* * * * *', () => {
+//   updatePrice()
+// });
 
 const server = app.listen(port, () => {
   console.log(`Listening to port ${port}`);

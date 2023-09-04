@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   password: { type: String },
   role: { type: String, enum: ["admin", "user"], default: "user" },
+  country: {type: String},
   createdAt: { type: Date, immutable: true, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

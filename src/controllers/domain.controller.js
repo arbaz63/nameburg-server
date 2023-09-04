@@ -5,48 +5,22 @@ require("dotenv").config();
 const { Domain } = db;
 
 const getDomains = async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Get the requested page from query parameter
-  const limit = parseInt(req.query.limit) || 20; // Set a default limit or get from query parameter
-
   try {
-    const totalDomains = await Domain.countDocuments();
-    const totalPages = Math.ceil(totalDomains / limit);
+    const totalDomains = await req.totalDomainsQuery.countDocuments();
+    const totalPages = Math.ceil(totalDomains / req.limit);
 
-    const domains = await Domain.find()
-      .populate("category")
-      .skip((page - 1) * limit) // Skip the appropriate number of documents based on page number
-      .limit(limit); // Limit the number of documents per page
+    const domains = await req.query
+      .skip((req.page - 1) * req.limit)
+      .limit(req.limit);
 
     res.json({
       domains,
-      currentPage: page,
+      currentPage: req.page,
       totalPages,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error fetching domains" });
-  }
-};
-
-const getDomainsByCategory = async (req, res) => {
-  const { categoryId } = req.params;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  try {
-    const totalDomains = await Domain.countDocuments({ categoryId });
-    const totalPages = Math.ceil(totalDomains / limit);
-    
-    const domains = await Domain.find({ category: categoryId })
-    .populate("category")
-    .skip((page - 1) * limit)
-    .limit(limit);
-    
-    res.json({
-      domains,
-      currentPage: page,
-      totalPages,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching domains by category" });
   }
 };
 
@@ -132,11 +106,10 @@ const resetPrice = async (req, res) => {
 
 module.exports = {
   getDomains,
-  getDomainsByCategory,
   getDomain,
   addDomain,
   deleteDomain,
   editDomain,
   incrementViews,
-  resetPrice
+  resetPrice,
 };

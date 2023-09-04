@@ -24,4 +24,11 @@ router.post(
   authController.signIn
 );
 
+router.put(
+  "/:id",
+  userCredentialsValidationRules(),
+  validate,
+  authController.updateUser
+);
+
 module.exports = router;

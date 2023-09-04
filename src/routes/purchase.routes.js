@@ -6,6 +6,9 @@ const { isAdmin, authenticateToken } = require("../middlewares");
 // Get all purchases
 router.get("/", authenticateToken, isAdmin, purchaseController.getAllPurchases);
 
+// Get all purchases of user
+router.get("/buyer/:buyerId", authenticateToken, purchaseController.getAllPurchasesOfUser);
+
 // Get purchase by ID
 router.get(
   "/:id",

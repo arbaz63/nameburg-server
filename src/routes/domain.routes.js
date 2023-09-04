@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const { domainController } = require("../controllers");
-const { authenticateToken, isAdmin } = require("../middlewares");
+const {
+  authenticateToken,
+  isAdmin,
+  handleFilters,
+  applyFilters,
+} = require("../middlewares");
 
 // Route to get all domain names
-router.get("/", domainController.getDomains);
-
-//Route to get all domain names by category
-router.get("/category/:categoryId", domainController.getDomainsByCategory);
+router.get("/", handleFilters, applyFilters, domainController.getDomains);
 
 //Route to get single domain
 router.get("/:id", domainController.getDomain);
@@ -31,10 +33,10 @@ router.put("/:id/increment-views", domainController.incrementViews);
 
 //Route to reset domain price anytime
 router.post(
-    "/reset-price/:id",
-    authenticateToken,
-    isAdmin,
-    domainController.resetPrice
-  );
+  "/reset-price/:id",
+  authenticateToken,
+  isAdmin,
+  domainController.resetPrice
+);
 
 module.exports = router;

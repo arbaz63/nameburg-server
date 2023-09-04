@@ -4,6 +4,7 @@ const domainRoute = require("./domain.routes");
 const categoryRoute = require("./category.routes");
 const purchaseRoute = require("./purchase.routes");
 const stripeRoute = require("./stripe.routes");
+const invoiceRoute = require("./invoice.routes");
 
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const routes = [
   {
     path: "/stripe",
     route: stripeRoute,
+  },
+  {
+    path: "/invoices",
+    route: invoiceRoute,
   },
 ];
 
