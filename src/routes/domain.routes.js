@@ -6,7 +6,13 @@ const {
   isAdmin,
   handleFilters,
   applyFilters,
+  checkNameAvailability,
 } = require("../middlewares");
+const multer = require("multer");
+
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Route to get all domain names
 router.get("/", handleFilters, applyFilters, domainController.getDomains);
@@ -15,10 +21,23 @@ router.get("/", handleFilters, applyFilters, domainController.getDomains);
 router.get("/:id", domainController.getDomain);
 
 // Route to create a new domain
-router.post("/", authenticateToken, isAdmin, domainController.addDomain);
+router.post(
+  "/",
+  // authenticateToken,
+  // isAdmin,
+  // checkNameAvailability,
+  upload.single("image"),
+  domainController.addDomain
+);
 
 // Route to update a domain
-router.put("/:id", authenticateToken, isAdmin, domainController.editDomain);
+router.put(
+  "/:id",
+  authenticateToken,
+  isAdmin,
+  checkNameAvailability,
+  domainController.editDomain
+);
 
 // Route to delete a domain
 router.delete(

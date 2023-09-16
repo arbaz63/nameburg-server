@@ -26,9 +26,34 @@ const stripeCheckout = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   }
+
+  const payment =  async (req, res) => {
+    const { paymentMethodId } = req.body;
+  
+    try {
+      // Create a payment intent with a return_url
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: 1000, // Amount in cents (adjust as needed)
+        currency: 'usd',
+        payment_method: paymentMethodId,
+        confirm: true, // Confirm the payment immediately
+        return_url: 'https://nameburg.com/', // Replace with your actual success URL
+      });
+  
+      // Handle successful payment intent confirmation
+      // You can save the paymentIntent.id in your database for future reference
+  
+      // Return the client secret and redirect to the return_url
+      res.json({ success: true, client_secret: paymentIntent.client_secret });
+    } catch (error) {
+      console.error('Payment error:', error);
+      res.status(500).json({ success: false, message: 'Payment failed' });
+    }
+  }
   
 
 module.exports = {
-    stripeCheckout
+    stripeCheckout,
+    payment
   };
   
