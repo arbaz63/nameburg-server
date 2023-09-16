@@ -39,13 +39,13 @@ const getDomain = async (req, res) => {
 
 const addDomain = async (req, res) => {
   try {
-    const imageBuffer = req.file.buffer;
-    const imageURL = "data:image/jpeg;base64," + imageBuffer.toString("base64")
-    const newDomain = new Domain({...req.body, image:imageURL});
+    const imageBuffer = req.file && req.file.buffer;
+    const imageURL = imageBuffer && "data:image/jpeg;base64," + imageBuffer.toString("base64")
+    const newDomain = new Domain({...req.body, image:imageURL||''});
     await newDomain.save();
-    res.status(201).json(req.body);
+    res.status(201).json(newDomain);
   } catch (error) {
-    res.status(400).json({ message: "Error creating domain" });
+    res.status(400).json({ message: `Error creating domain ${error}` });
   }
 };
 

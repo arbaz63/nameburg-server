@@ -23,9 +23,9 @@ router.get("/:id", domainController.getDomain);
 // Route to create a new domain
 router.post(
   "/",
-  // authenticateToken,
-  // isAdmin,
-  // checkNameAvailability,
+  authenticateToken,
+  isAdmin,
+  checkNameAvailability,
   upload.single("image"),
   domainController.addDomain
 );
