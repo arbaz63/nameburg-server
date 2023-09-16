@@ -51,12 +51,32 @@ const applyFilters = async (req, res, next) => {
     }
 
     //filter by min and max length
-    if (!isNaN(minLength)) {
-      query = query.find({ $where: `this.name.length >= ${minLength}` });
-    }
+    // if (!isNaN(minLength)) {
+    //   query = query.find({ $where: `this.name.length >= ${minLength}` });
+    // }
 
-    if (!isNaN(maxLength)) {
-      query = query.find({ $where: `this.name.length <= ${maxLength}` });
+    // if (!isNaN(maxLength)) {
+    //   query = query.find({ $where: `this.name.length <= ${maxLength}` });
+    // }
+
+    if (!isNaN(minLength) || !isNaN(maxLength) || nameFilter || category) {
+      query = query.find({
+        name: { $exists: true },
+        $expr: {
+          $and: [
+            { $gte: [{ $strLenCP: "$name" }, minLength] },
+            { $lte: [{ $strLenCP: "$name" }, maxLength] },
+            {
+              $regexMatch: {
+                input: "$name",
+                regex: nameFilter,
+                options: "i",
+              },
+            },
+            { $eq: ["$category", category] },
+          ],
+        },
+      });
     }
 
     //filter by extensions
