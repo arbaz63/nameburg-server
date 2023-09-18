@@ -56,12 +56,12 @@ const applyFilters = async (req, res, next) => {
     //filter by min and max length
     if (!isNaN(minLength)) {
       console.log('minLength')
-      query = query.find({ currentPrice: { $gte: minLength } });
+      query = query.find({ name: { $gte: minLength } });
     }
 
     if (!isNaN(maxLength)) {
       console.log('maxLength')
-      query = query.find({ currentPrice: { $lte: maxLength } });
+      query = query.find({ name: { $lte: maxLength } });
     }
 
     //filter by min and max length
@@ -152,11 +152,11 @@ const applyFilters = async (req, res, next) => {
     }
 
     if (!isNaN(minLength)) {
-      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $gte: minLength } });
+      totalDomainsQuery = totalDomainsQuery.find({ name: { $gte: minLength } });
     }
 
     if (!isNaN(maxLength)) {
-      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $lte: maxLength } });
+      totalDomainsQuery = totalDomainsQuery.find({ name: { $lte: maxLength } });
     }
 
     // if (!isNaN(minLength) || !isNaN(maxLength)) {
