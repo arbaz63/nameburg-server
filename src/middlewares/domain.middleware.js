@@ -29,8 +29,8 @@ const applyFilters = async (req, res, next) => {
       minPrice,
       maxLength,
       maxPrice,
-      selectedExtension,
-      allowedExtensions,
+      // selectedExtension,
+      // allowedExtensions,
       nameFilter,
       category,
       sort,
@@ -38,56 +38,65 @@ const applyFilters = async (req, res, next) => {
 
     //filter by keywords
     if (keywords.length > 0 && !keywords.includes('All')) {
+      console.log('keyword')
       query = query.find({ keywords: { $in: keywords } });
     }
 
-    //filter by min and max price
+    // //filter by min and max price
     if (!isNaN(minPrice)) {
+      console.log('minprice')
       query = query.find({ currentPrice: { $gte: minPrice } });
     }
 
     if (!isNaN(maxPrice)) {
+      console.log('maxprice')
       query = query.find({ currentPrice: { $lte: maxPrice } });
     }
 
     //filter by min and max length
+    if (!isNaN(minLength)) {
+      console.log('minLength')
+      query = query.find({ currentPrice: { $gte: minLength } });
+    }
+
+    if (!isNaN(maxLength)) {
+      console.log('maxLength')
+      query = query.find({ currentPrice: { $lte: maxLength } });
+    }
+
+    //filter by min and max length
     // if (!isNaN(minLength)) {
+    //   console.log('minlength')
     //   query = query.find({ $where: `this.name.length >= ${minLength}` });
     // }
 
     // if (!isNaN(maxLength)) {
+    //   console.log('maxlength')
     //   query = query.find({ $where: `this.name.length <= ${maxLength}` });
     // }
 
-    if (!isNaN(minLength) || !isNaN(maxLength) || nameFilter || category) {
-      query = query.find({
-        name: { $exists: true },
-        $expr: {
-          $and: [
-            { $gte: [{ $strLenCP: "$name" }, minLength] },
-            { $lte: [{ $strLenCP: "$name" }, maxLength] },
-            {
-              $regexMatch: {
-                input: "$name",
-                regex: nameFilter,
-                options: "i",
-              },
-            },
-            { $eq: ["$category", category] },
-          ],
-        },
-      });
-    }
+    // if (!isNaN(minLength) || !isNaN(maxLength)) {
+    //   console.log('minlength maxlength')
+    //   query = query.find({
+    //     name: { $exists: true },
+    //     $expr: {
+    //       $and: [
+    //         { $gte: [{ $strLenCP: "$name" }, minLength] },
+    //         { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
+    //       ],
+    //     },
+    //   });
+    // }
 
     //filter by extensions
-    if (
-      selectedExtension !== "All" &&
-      allowedExtensions.includes(selectedExtension)
-    ) {
-      query = query.find({ name: { $regex: `${selectedExtension}$` } });
-    }
+    // if (
+    //   selectedExtension !== "All" &&
+    //   allowedExtensions.includes(selectedExtension)
+    // ) {
+    //   query = query.find({ name: { $regex: `${selectedExtension}$` } });
+    // }
 
-    //sorting
+    // //sorting
     if (sort === "low-high") {
       query = query.sort({ currentPrice: 1 });
     } else if (sort === "high-low") {
@@ -113,45 +122,61 @@ const applyFilters = async (req, res, next) => {
       });
     }
 
-    if (
-      selectedExtension !== "All" &&
-      allowedExtensions.includes(selectedExtension)
-    ) {
-      totalDomainsQuery = totalDomainsQuery.find({
-        name: { $regex: `${selectedExtension}$` },
-      });
+    // if (
+    //   selectedExtension !== "All" &&
+    //   allowedExtensions.includes(selectedExtension)
+    // ) {
+    //   totalDomainsQuery = totalDomainsQuery.find({
+    //     name: { $regex: `${selectedExtension}$` },
+    //   });
+    // }
+
+    // if (!isNaN(minPrice) || !isNaN(maxPrice)) {
+    //   totalDomainsQuery = totalDomainsQuery.find({
+    //     currentPrice: { $exists: true },
+    //     $expr: {
+    //       $and: [
+    //         { $gte: [{ $strLenCP: "$currentPrice" }, minPrice] },
+    //         { $lte: [{ $strLenCP: "$currentPrice" }, maxPrice] },
+    //       ],
+    //     },
+    //   });
+    // }
+
+    if (!isNaN(minPrice)) {
+      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $gte: minPrice } });
     }
 
-    if (!isNaN(minPrice) || !isNaN(maxPrice)) {
-      totalDomainsQuery = totalDomainsQuery.find({
-        currentPrice: { $exists: true },
-        $expr: {
-          $and: [
-            { $gte: [{ $strLenCP: "$currentPrice" }, minLength] },
-            { $lte: [{ $strLenCP: "$currentPrice" }, maxLength] },
-          ],
-        },
-      });
+    if (!isNaN(maxPrice)) {
+      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $lte: maxPrice } });
     }
 
-    if (!isNaN(minLength) || !isNaN(maxLength) || nameFilter || category) {
-      totalDomainsQuery = totalDomainsQuery.find({
-        name: { $exists: true },
-        $expr: {
-          $and: [
-            { $gte: [{ $strLenCP: "$name" }, minLength] },
-            { $lte: [{ $strLenCP: "$name" }, maxLength] },
-            {
-              $regexMatch: {
-                input: "$name",
-                regex: nameFilter,
-                options: "i",
-              },
-            },
-            { $eq: ["$category", category] },
-          ],
-        },
-      });
+    if (!isNaN(minLength)) {
+      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $gte: minLength } });
+    }
+
+    if (!isNaN(maxLength)) {
+      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $lte: maxLength } });
+    }
+
+    // if (!isNaN(minLength) || !isNaN(maxLength)) {
+    //   totalDomainsQuery = totalDomainsQuery.find({
+    //     name: { $exists: true },
+    //     $expr: {
+    //       $and: [
+    //         { $gte: [{ $strLenCP: "$name" }, minLength] },
+    //         { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
+    //       ],
+    //     },
+    //   });
+    // }
+
+    if (nameFilter) {
+      totalDomainsQuery = totalDomainsQuery.find({ name: { $regex: nameFilter, $options: "i" } });
+    }
+
+    if (category) {
+      totalDomainsQuery = totalDomainsQuery.find({ category: category });
     }
 
     req.query = query;
