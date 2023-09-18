@@ -28,12 +28,12 @@ const stripeCheckout = async (req, res) => {
   }
 
   const payment =  async (req, res) => {
-    const { paymentMethodId } = req.body;
+    const { paymentMethodId, amount } = req.body;
   
     try {
       // Create a payment intent with a return_url
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: 1000, // Amount in cents (adjust as needed)
+        amount: amount*100, // Amount in cents (adjust as needed)
         currency: 'usd',
         payment_method: paymentMethodId,
         confirm: true, // Confirm the payment immediately
