@@ -54,15 +54,15 @@ const applyFilters = async (req, res, next) => {
     }
 
     //filter by min and max length
-    if (!isNaN(minLength)) {
-      console.log('minLength')
-      query = query.find({ name: { $gte: minLength } });
-    }
+    // if (!isNaN(minLength)) {
+    //   console.log('minLength')
+    //   query = query.find({ name: { $gte: minLength } });
+    // }
 
-    if (!isNaN(maxLength)) {
-      console.log('maxLength')
-      query = query.find({ name: { $lte: maxLength } });
-    }
+    // if (!isNaN(maxLength)) {
+    //   console.log('maxLength')
+    //   query = query.find({ name: { $lte: maxLength } });
+    // }
 
     //filter by min and max length
     // if (!isNaN(minLength)) {
@@ -75,18 +75,18 @@ const applyFilters = async (req, res, next) => {
     //   query = query.find({ $where: `this.name.length <= ${maxLength}` });
     // }
 
-    // if (!isNaN(minLength) || !isNaN(maxLength)) {
-    //   console.log('minlength maxlength')
-    //   query = query.find({
-    //     name: { $exists: true },
-    //     $expr: {
-    //       $and: [
-    //         { $gte: [{ $strLenCP: "$name" }, minLength] },
-    //         { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
-    //       ],
-    //     },
-    //   });
-    // }
+    if (!isNaN(minLength) || !isNaN(maxLength)) {
+      console.log('minlength maxlength')
+      query = query.find({
+        name: { $exists: true },
+        $expr: {
+          $and: [
+            { $gte: [{ $strLenCP: "$name" }, minLength] },
+            { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
+          ],
+        },
+      });
+    }
 
     //filter by extensions
     // if (
@@ -151,25 +151,25 @@ const applyFilters = async (req, res, next) => {
       totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $lte: maxPrice } });
     }
 
-    if (!isNaN(minLength)) {
-      totalDomainsQuery = totalDomainsQuery.find({ name: { $gte: minLength } });
-    }
-
-    if (!isNaN(maxLength)) {
-      totalDomainsQuery = totalDomainsQuery.find({ name: { $lte: maxLength } });
-    }
-
-    // if (!isNaN(minLength) || !isNaN(maxLength)) {
-    //   totalDomainsQuery = totalDomainsQuery.find({
-    //     name: { $exists: true },
-    //     $expr: {
-    //       $and: [
-    //         { $gte: [{ $strLenCP: "$name" }, minLength] },
-    //         { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
-    //       ],
-    //     },
-    //   });
+    // if (!isNaN(minLength)) {
+    //   totalDomainsQuery = totalDomainsQuery.find({ name: { $gte: minLength } });
     // }
+
+    // if (!isNaN(maxLength)) {
+    //   totalDomainsQuery = totalDomainsQuery.find({ name: { $lte: maxLength } });
+    // }
+
+    if (!isNaN(minLength) || !isNaN(maxLength)) {
+      totalDomainsQuery = totalDomainsQuery.find({
+        name: { $exists: true },
+        $expr: {
+          $and: [
+            { $gte: [{ $strLenCP: "$name" }, minLength] },
+            { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
+          ],
+        },
+      });
+    }
 
     if (nameFilter) {
       totalDomainsQuery = totalDomainsQuery.find({ name: { $regex: nameFilter, $options: "i" } });
