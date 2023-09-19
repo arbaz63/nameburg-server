@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const purchaseSchema = new mongoose.Schema({
   domains: [
     {
-      name: { type: String, required: true },
-      price: { type: Number, required: true },
-      discount: { type: Number, default: 0 },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Domain", // This should match the model name for the Domain collection
+      required: true,
     },
   ],
   buyer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
