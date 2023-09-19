@@ -71,6 +71,8 @@ const signIn = async (req, res) => {
       fullName: user.fullName,
       accessToken,
       role: user.role,
+      email: user.email,
+      country:user.country
     });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
