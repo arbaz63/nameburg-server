@@ -17,7 +17,7 @@ const handleErrors = (err) => {
 };
 
 const signUp = async (req, res) => {
-  const { email, password, fullName } = req.body;
+  const { email, password, fullName, country } = req.body;
   try {
     const existingUsers = await User.find();
     const role = existingUsers.length === 0 ? "admin" : "user";
@@ -26,6 +26,7 @@ const signUp = async (req, res) => {
       password,
       fullName,
       role,
+      country
     });
     const accessToken = jwt.sign(
       { userId: newUser._id, email: newUser.email },
