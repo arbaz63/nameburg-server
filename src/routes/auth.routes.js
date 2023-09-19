@@ -3,7 +3,7 @@ const {
   validate,
   checkEmailAvailability,
 } = require("../middlewares");
-const { userCredentialsValidationRules } = require("../validators");
+const { userCredentialsValidationRules, userCredentialsValidationRules1 } = require("../validators");
 
 const { authController } = require("../controllers");
 
@@ -26,7 +26,7 @@ router.post(
 
 router.put(
   "/:id",
-  userCredentialsValidationRules(),
+  userCredentialsValidationRules1(),
   validate,
   authController.updateUser
 );
