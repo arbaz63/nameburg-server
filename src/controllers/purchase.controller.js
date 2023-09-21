@@ -17,7 +17,7 @@ const getAllPurchases = async (req, res) => {
         path: "buyer",
         select: "fullName email",
       })
-      .populate("domain")
+      .populate("domains")
       .skip((page - 1) * limit) // Skip the appropriate number of documents based on page number
       .limit(limit); // Limit the number of documents per page
 
@@ -44,7 +44,7 @@ const getAllPurchasesOfUser = async (req, res) => {
         path: "buyer",
         select: "fullName email",
       })
-      .populate("domain")
+      .populate("domains")
       .skip((page - 1) * limit) // Skip the appropriate number of documents based on page number
       .limit(limit); // Limit the number of documents per page
 
@@ -65,7 +65,7 @@ const getSinglePurchase = async (req, res) => {
         path: "buyer",
         select: "fullName email",
       })
-      .populate("domain");
+      .populate("domains");
     if (!purchase) {
       res.status(404).json({ message: "Purchase not found" });
       return;

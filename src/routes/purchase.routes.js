@@ -13,7 +13,6 @@ router.get("/buyer/:buyerId", authenticateToken, purchaseController.getAllPurcha
 router.get(
   "/:id",
   authenticateToken,
-  isAdmin,
   purchaseController.getSinglePurchase
 );
 

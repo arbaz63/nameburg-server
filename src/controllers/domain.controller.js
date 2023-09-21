@@ -73,16 +73,20 @@ const editDomain = async (req, res) => {
 
 const incrementViews = async (req, res) => {
   try {
-    const domain = await Domain.findById(req.params.id);
+    const domain = await Domain.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } }, // Increment view count by 1
+      { new: true } // To return the updated document
+    );
+
     if (!domain) {
       res.status(404).json({ message: "Domain not found" });
       return;
     }
-    domain.views += 1; // Increment view count
-    await domain.save();
+
     res.json({ message: "View count incremented" });
   } catch (error) {
-    res.status(400).json({ message: "Error updating view count" });
+    res.status(500).json({ message: "Error updating view count" });
   }
 };
 
