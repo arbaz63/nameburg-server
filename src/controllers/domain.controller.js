@@ -60,16 +60,20 @@ const deleteDomain = async (req, res) => {
 
 const editDomain = async (req, res) => {
   try {
+    const imageBuffer = req.file && req.file.buffer;
+    const imageURL = imageBuffer && "data:image/jpeg;base64," + imageBuffer.toString("base64");
     const updatedDomain = await Domain.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { ...req.body, image: imageURL || '' },
       { new: true }
     );
+
     res.json(updatedDomain);
   } catch (error) {
     res.status(400).json({ message: "Error updating domain" });
   }
 };
+
 
 const incrementViews = async (req, res) => {
   try {

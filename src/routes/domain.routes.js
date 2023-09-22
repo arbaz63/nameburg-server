@@ -35,6 +35,7 @@ router.put(
   "/:id",
   authenticateToken,
   isAdmin,
+  upload.single("image"),
   checkNameAvailability,
   domainController.editDomain
 );

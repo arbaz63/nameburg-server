@@ -193,7 +193,7 @@ const checkNameAvailability = async (req, res, next) => {
   try {
     const existingDomain = await Domain.findOne({ name });
 
-    if (existingDomain) {
+    if (existingDomain||existingDomain.name!==name) {
       return res.status(400).json({ error: "Name already taken" });
     }
 
