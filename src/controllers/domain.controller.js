@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const db = require("../models");
 require("dotenv").config();
+const sharp = require("sharp"); // Import sharp
 
 const { Domain } = db;
 
@@ -11,7 +12,7 @@ const getDomains = async (req, res) => {
 
     const domains = await req.query
       .skip((req.page - 1) * req.limit)
-      .limit(req.limit);
+      .limit(req.limit)
 
     res.json({
       domains,
@@ -40,8 +41,19 @@ const getDomain = async (req, res) => {
 const addDomain = async (req, res) => {
   try {
     const imageBuffer = req.file && req.file.buffer;
-    const imageURL = imageBuffer && "data:image/jpeg;base64," + imageBuffer.toString("base64")
-    const newDomain = new Domain({...req.body, image:imageURL||''});
+    let imageURL = ""; // Initialize imageURL
+
+    if (imageBuffer) {
+      // Compress and convert the image to base64
+      const compressedImageBuffer = await sharp(imageBuffer)
+        .resize(300) // Set the desired width (you can adjust this)
+        .jpeg({ quality: 100 }) // Set the JPEG quality (you can adjust this)
+        .toBuffer();
+
+      imageURL = "data:image/jpeg;base64," + compressedImageBuffer.toString("base64");
+    }
+
+    const newDomain = new Domain({ ...req.body, image: imageURL || "" });
     await newDomain.save();
     res.status(201).json(newDomain);
   } catch (error) {
@@ -61,7 +73,18 @@ const deleteDomain = async (req, res) => {
 const editDomain = async (req, res) => {
   try {
     const imageBuffer = req.file && req.file.buffer;
-    const imageURL = imageBuffer && "data:image/jpeg;base64," + imageBuffer.toString("base64");
+    let imageURL = ""; // Initialize imageURL
+
+    if (imageBuffer) {
+      // Compress and convert the image to base64
+      const compressedImageBuffer = await sharp(imageBuffer)
+        .resize(300) // Set the desired width (you can adjust this)
+        .jpeg({ quality: 100 }) // Set the JPEG quality (you can adjust this)
+        .toBuffer();
+
+      imageURL = "data:image/jpeg;base64," + compressedImageBuffer.toString("base64");
+    }
+
     const updatedDomain = await Domain.findByIdAndUpdate(
       req.params.id,
       { ...req.body, image: imageURL || '' },
