@@ -2,14 +2,14 @@
     "name": "nameburg",
     "version": "2.0.1",
     "description": "nameburg app",
-    "main": "app.js",
+    "main": "index.js",
     "engines": {
         "node": "18.x"
     },
     "scripts": {
         "test": "jest",
-        "start": "node src/app.js",
-        "dev": "nodemon src/app.js"
+        "start": "node index.js",
+        "dev": "nodemon index.js"
     },
     "author": "",
     "license": "ISC",

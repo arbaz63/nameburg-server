@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const cron = require('node-cron');
-const routes = require("./routes");
-const updatePrice = require("./utils/updatePrices");
+const routes = require("./src/routes");
+const updatePrice = require("./src/utils/updatePrices");
 
 require("dotenv").config();
 
