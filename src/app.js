@@ -30,6 +30,8 @@ app.use(cors(corsOptions));
 
 app.use("/api/v1", routes);
 
+app.get('/', (req, res)=>res.json({message:'success'}))
+
 // cron.schedule('* * * * *', () => {
 //   updatePrice()
 // });
