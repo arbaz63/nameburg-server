@@ -11,7 +11,8 @@ const getDomains = async (req, res) => {
     const totalPages = Math.ceil(totalDomains / req.limit);
 
     const domains = await req.query
-      .skip((req.page - 1) * req.limit)
+    .select('image date description name views sold currentPrice keywords')  
+    .skip((req.page - 1) * req.limit)
       .limit(req.limit)
 
     res.json({
@@ -28,7 +29,7 @@ const getDomains = async (req, res) => {
 
 const getDomain = async (req, res) => {
   try {
-    const domain = await Domain.findById(req.params.id).populate("category");
+    const domain = await Domain.findById(req.params.id).populate("category").select('bigImage date description name views sold currentPrice keywords')  ;
     if (!domain) {
       return res.status(404).json({ message: "Domain not found" });
     }
@@ -41,19 +42,25 @@ const getDomain = async (req, res) => {
 const addDomain = async (req, res) => {
   try {
     const imageBuffer = req.file && req.file.buffer;
-    let imageURL = ""; // Initialize imageURL
+    let imageURL1 = ""; // Initialize imageURL
+    let imageURL2 = ""; // Initialize imageURL
 
     if (imageBuffer) {
-      // Compress and convert the image to base64
-      const compressedImageBuffer = await sharp(imageBuffer)
+      const compressedImageBuffer1 = await sharp(imageBuffer)
         .resize(300) // Set the desired width (you can adjust this)
         .jpeg({ quality: 100 }) // Set the JPEG quality (you can adjust this)
         .toBuffer();
+      // Compress and convert the image to base64
+      const compressedImageBuffer2 = await sharp(imageBuffer)
+        .resize(1000) // Set the desired width (you can adjust this)
+        .jpeg({ quality: 100 }) // Set the JPEG quality (you can adjust this)
+        .toBuffer();
 
-      imageURL = "data:image/jpeg;base64," + compressedImageBuffer.toString("base64");
+      imageURL1 = "data:image/jpeg;base64," + compressedImageBuffer1.toString("base64");
+      imageURL2 = "data:image/jpeg;base64," + compressedImageBuffer2.toString("base64");
     }
 
-    const newDomain = new Domain({ ...req.body, image: imageURL || "" });
+    const newDomain = new Domain({ ...req.body, image: imageURL1 || "", bigImage:imageURL2||"" });
     await newDomain.save();
     res.status(201).json(newDomain);
   } catch (error) {
@@ -73,21 +80,27 @@ const deleteDomain = async (req, res) => {
 const editDomain = async (req, res) => {
   try {
     const imageBuffer = req.file && req.file.buffer;
-    let imageURL = ""; // Initialize imageURL
+    let imageURL1 = ""; // Initialize imageURL
+    let imageURL2 = ""; // Initialize imageURL
 
     if (imageBuffer) {
-      // Compress and convert the image to base64
-      const compressedImageBuffer = await sharp(imageBuffer)
+      const compressedImageBuffer1 = await sharp(imageBuffer)
         .resize(300) // Set the desired width (you can adjust this)
         .jpeg({ quality: 100 }) // Set the JPEG quality (you can adjust this)
         .toBuffer();
+      // Compress and convert the image to base64
+      const compressedImageBuffer2 = await sharp(imageBuffer)
+        .resize(1000) // Set the desired width (you can adjust this)
+        .jpeg({ quality: 100 }) // Set the JPEG quality (you can adjust this)
+        .toBuffer();
 
-      imageURL = "data:image/jpeg;base64," + compressedImageBuffer.toString("base64");
+      imageURL1 = "data:image/jpeg;base64," + compressedImageBuffer1.toString("base64");
+      imageURL2 = "data:image/jpeg;base64," + compressedImageBuffer2.toString("base64");
     }
 
     const updatedDomain = await Domain.findByIdAndUpdate(
       req.params.id,
-      { ...req.body, image: imageURL || '' },
+      { ...req.body, image: imageURL1 || '', bigImage:imageURL2||"" },
       { new: true }
     );
 

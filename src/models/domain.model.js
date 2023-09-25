@@ -5,6 +5,7 @@ const domainSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String },
   image: { type: String },
+  bigImage: { type: String },
   maxPrice: Number, // Maximum price for the domain
   minPrice: Number, // Minimum price for the domain
   currentPrice: {
