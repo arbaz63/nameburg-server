@@ -31,6 +31,7 @@ const domainSchema = new mongoose.Schema({
     default: false, // Set the default value to false
   },
   keywords: [{ type: String }],
+  discount: { type: Number, default: 0 },
   date: { type: Date, default: Date.now },
 });
 

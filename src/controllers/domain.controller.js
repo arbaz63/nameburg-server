@@ -11,7 +11,7 @@ const getDomains = async (req, res) => {
     const totalPages = Math.ceil(totalDomains / req.limit);
 
     const domains = await req.query
-    .select('image maxPrice date description name views sold currentPrice keywords')  
+    .select('image maxPrice date description name views sold currentPrice keywords discount')  
     .skip((req.page - 1) * req.limit)
       .limit(req.limit)
 
@@ -29,7 +29,7 @@ const getDomains = async (req, res) => {
 
 const getDomain = async (req, res) => {
   try {
-    const domain = await Domain.findById(req.params.id).populate("category").select('bigImage maxPrice date description name views sold currentPrice keywords')  ;
+    const domain = await Domain.findById(req.params.id).populate("category").select('bigImage discount maxPrice date description name views sold currentPrice keywords')  ;
     if (!domain) {
       return res.status(404).json({ message: "Domain not found" });
     }

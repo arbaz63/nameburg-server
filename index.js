@@ -30,10 +30,12 @@ app.use(cors(corsOptions));
 
 app.use("/api/v1", routes);
 
-app.get('/', (req, res)=>res.json({message:'success'}))
+app.get('/', (req, res)=>{
+  res.json({message:'success'})
+})
 
-// cron.schedule('* * * * *', () => {
-//   updatePrice()
+// cron.schedule('0 3 * * 0', () => { //run on every sunday at 3:00AM
+//   updatePrice();
 // });
 
 const server = app.listen(port, () => {

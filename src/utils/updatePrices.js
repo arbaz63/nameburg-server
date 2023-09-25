@@ -5,10 +5,8 @@ const { Domain } = db;
 
 const updatePrice = async (req, res) => {
   try {
-    const domains = await Domain.find();
+    const domains = await Domain.find().select('name _id maxPrice minPrice currentPrice date weeksOnSale discount');
     const currentDate = new Date();
-    console.log('prices updated')
-
     // Loop through each domain and update its price based on the pricing logic
     domains.forEach(async (domain) => {
       const maxPrice = domain.maxPrice;
@@ -17,7 +15,7 @@ const updatePrice = async (req, res) => {
       const step = Math.floor((maxPrice - minPrice) / 52);
       const weekInMillis = 7 * 24 * 60 * 60 * 1000; // A week in milliseconds
       const domainAgeInMillis = currentDate - domain.date;
-
+      const discount = ((maxPrice - currentPrice) / maxPrice) * 100;
       // Check if at least a week has passed since the domain was created
       if (domainAgeInMillis >= weekInMillis) {
         const newPrice = Math.max(currentPrice - step, minPrice);
@@ -27,11 +25,12 @@ const updatePrice = async (req, res) => {
         } else {
           domain.currentPrice = newPrice;
           domain.weeksOnSale += 1;
+          domain.discount = discount;
         }
         await domain.save();
       }
     });
-
+    console.log('prices updates')
   } catch (error) {
     console.error("Error updating domain prices:", error);
   }

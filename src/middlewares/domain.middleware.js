@@ -103,6 +103,8 @@ const applyFilters = async (req, res, next) => {
       query = query.sort({ currentPrice: 1 });
     } else if (sort === "high-low") {
       query = query.sort({ currentPrice: -1 });
+    } else if (sort === "discount") {
+      query = query.sort({ discount: -1 });
     }
 
     //search by name
@@ -183,6 +185,10 @@ const applyFilters = async (req, res, next) => {
 
     if (category) {
       totalDomainsQuery = totalDomainsQuery.find({ category: category });
+    }
+
+    if (sold) {
+      totalDomainsQuery = totalDomainsQuery.find({ sold: sold==='false'?false:true });
     }
 
     req.query = query;
