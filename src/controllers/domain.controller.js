@@ -39,24 +39,6 @@ const getDomain = async (req, res) => {
   }
 };
 
-const getDomainsByViews = async (req, res) => {
-  try {
-    const domains = await Domain.find()
-      .select('bigImage maxPrice date description name views sold currentPrice keywords')
-      .sort({ views: -1 })
-      .limit(8);
-    if (!domains || domains.length === 0) {
-      return res.status(404).json({ message: "Domains not found" });
-    }
-
-    res.json(domains);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching domains" });
-  }
-};
-
-
 const addDomain = async (req, res) => {
   try {
     const imageBuffer = req.file && req.file.buffer;
@@ -125,7 +107,7 @@ const editDomain = async (req, res) => {
     if (existingDomain && existingDomain._id.toString() !== req.params.id) {
       return res.status(400).json({ error: "Name already taken" });
     }
-    
+
     const updatedDomain = await Domain.findByIdAndUpdate(
       req.params.id,
       { ...req.body, image: imageURL1 || '', bigImage:imageURL2||"" },
@@ -182,7 +164,6 @@ const resetPrice = async (req, res) => {
 module.exports = {
   getDomains,
   getDomain,
-  getDomainsByViews,
   addDomain,
   deleteDomain,
   editDomain,

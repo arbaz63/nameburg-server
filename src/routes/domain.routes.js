@@ -20,9 +20,6 @@ router.get("/", handleFilters, applyFilters, domainController.getDomains);
 //Route to get single domain
 router.get("/:id", domainController.getDomain);
 
-//Route to get domains by views
-router.get("/sort/views", domainController.getDomainsByViews);
-
 // Route to create a new domain
 router.post(
   "/",

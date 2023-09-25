@@ -35,23 +35,23 @@ const applyFilters = async (req, res, next) => {
       nameFilter,
       category,
       sort,
-      sold
+      sold,
     } = req;
 
     //filter by keywords
-    if (keywords.length > 0 && !keywords.includes('All')) {
-      console.log('keyword')
+    if (keywords.length > 0 && !keywords.includes("All")) {
+      console.log("keyword");
       query = query.find({ keywords: { $in: keywords } });
     }
 
     // //filter by min and max price
     if (!isNaN(minPrice)) {
-      console.log('minprice')
+      console.log("minprice");
       query = query.find({ currentPrice: { $gte: minPrice } });
     }
 
     if (!isNaN(maxPrice)) {
-      console.log('maxprice')
+      console.log("maxprice");
       query = query.find({ currentPrice: { $lte: maxPrice } });
     }
 
@@ -78,13 +78,13 @@ const applyFilters = async (req, res, next) => {
     // }
 
     if (!isNaN(minLength) || !isNaN(maxLength)) {
-      console.log('minlength maxlength')
+      console.log("minlength maxlength");
       query = query.find({
         name: { $exists: true },
         $expr: {
           $and: [
             { $gte: [{ $strLenCP: "$name" }, minLength] },
-            { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
+            { $lte: [{ $strLenCP: "$name" }, maxLength || 100] },
           ],
         },
       });
@@ -107,8 +107,9 @@ const applyFilters = async (req, res, next) => {
       query = query.sort({ discount: -1 });
     } else if (sort === "date") {
       query = query.sort({ date: -1 });
+    } else if (sort === "views") {
+      query = query.sort({ views: -1 });
     }
-    
 
     //search by name
     if (nameFilter) {
@@ -121,7 +122,7 @@ const applyFilters = async (req, res, next) => {
     }
 
     if (sold) {
-      query = query.find({ sold: sold==='false'?false:true });
+      query = query.find({ sold: sold === "false" ? false : true });
     }
 
     //Calculate total pages
@@ -155,11 +156,15 @@ const applyFilters = async (req, res, next) => {
     // }
 
     if (!isNaN(minPrice)) {
-      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $gte: minPrice } });
+      totalDomainsQuery = totalDomainsQuery.find({
+        currentPrice: { $gte: minPrice },
+      });
     }
 
     if (!isNaN(maxPrice)) {
-      totalDomainsQuery = totalDomainsQuery.find({ currentPrice: { $lte: maxPrice } });
+      totalDomainsQuery = totalDomainsQuery.find({
+        currentPrice: { $lte: maxPrice },
+      });
     }
 
     // if (!isNaN(minLength)) {
@@ -176,14 +181,16 @@ const applyFilters = async (req, res, next) => {
         $expr: {
           $and: [
             { $gte: [{ $strLenCP: "$name" }, minLength] },
-            { $lte: [{ $strLenCP: "$name" }, maxLength||100] },
+            { $lte: [{ $strLenCP: "$name" }, maxLength || 100] },
           ],
         },
       });
     }
 
     if (nameFilter) {
-      totalDomainsQuery = totalDomainsQuery.find({ name: { $regex: nameFilter, $options: "i" } });
+      totalDomainsQuery = totalDomainsQuery.find({
+        name: { $regex: nameFilter, $options: "i" },
+      });
     }
 
     if (category) {
@@ -191,7 +198,9 @@ const applyFilters = async (req, res, next) => {
     }
 
     if (sold) {
-      totalDomainsQuery = totalDomainsQuery.find({ sold: sold==='false'?false:true });
+      totalDomainsQuery = totalDomainsQuery.find({
+        sold: sold === "false" ? false : true,
+      });
     }
 
     req.query = query;
@@ -206,23 +215,22 @@ const applyFilters = async (req, res, next) => {
 const checkNameAvailability = async (req, res, next) => {
   const { name } = req.body;
   const { id } = req.params;
-  
+
   try {
     const existingDomain = await Domain.findOne({ name });
-    
+
     if (existingDomain && existingDomain._id.toString() !== id) {
       return res.status(400).json({ error: "Name already taken" });
     }
-    
+
     next();
   } catch (err) {
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
 
-
 module.exports = {
   handleFilters,
   applyFilters,
-  checkNameAvailability
+  checkNameAvailability,
 };
