@@ -13,7 +13,7 @@ const handleFilters = (req, res, next) => {
   req.maxLength = parseInt(req.query.maxLength);
   req.allowedExtensions = ["All", ".com", ".io", ".ly", ".me"];
   req.selectedExtension = req.query.extension || "All";
-  req.sort = req.query.sort || "low-high";
+  req.sort = req.query.sort || "date";
   req.nameFilter = req.query.searchTerm;
   req.category = req.query.category;
   req.sold = req.query.sold;
@@ -105,7 +105,10 @@ const applyFilters = async (req, res, next) => {
       query = query.sort({ currentPrice: -1 });
     } else if (sort === "discount") {
       query = query.sort({ discount: -1 });
+    } else if (sort === "date") {
+      query = query.sort({ date: -1 });
     }
+    
 
     //search by name
     if (nameFilter) {
