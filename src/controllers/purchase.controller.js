@@ -2,7 +2,7 @@
 const db = require("../models");
 require("dotenv").config();
 
-const { Purchase } = db;
+const { Purchase, Domain } = db;
 
 const getAllPurchases = async (req, res) => {
   const page = parseInt(req.query.page) || 1; // Get the requested page from query parameter
@@ -78,8 +78,18 @@ const getSinglePurchase = async (req, res) => {
 
 const createNewPurchase = async (req, res) => {
   try {
-    const newPurchase = new Purchase(req.body);
+    const purchaseData = req.body;
+    
+    // Create a new purchase
+    const newPurchase = new Purchase(purchaseData);
+    
+    // Save the purchase
     const savedPurchase = await newPurchase.save();
+    
+    // Update 'sold' property for each domain
+    const domainIds = purchaseData.domains;
+    await Domain.updateMany({ _id: { $in: domainIds } }, { sold: true });
+
     res.json(savedPurchase);
   } catch (error) {
     res.status(400).json({ message: "Error creating purchase" });
