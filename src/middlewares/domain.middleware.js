@@ -16,6 +16,7 @@ const handleFilters = (req, res, next) => {
   req.sort = req.query.sort || "low-high";
   req.nameFilter = req.query.searchTerm;
   req.category = req.query.category;
+  req.sold = req.query.sold;
   next();
 };
 
@@ -34,6 +35,7 @@ const applyFilters = async (req, res, next) => {
       nameFilter,
       category,
       sort,
+      sold
     } = req;
 
     //filter by keywords
@@ -111,6 +113,10 @@ const applyFilters = async (req, res, next) => {
     //filter by category
     if (category) {
       query = query.find({ category: category });
+    }
+
+    if (sold) {
+      query = query.find({ sold: sold==='false'?false:true });
     }
 
     //Calculate total pages
