@@ -78,6 +78,11 @@ const addDomain = async (req, res) => {
       imageURL2 = "data:image/jpeg;base64," + compressedImageBuffer2.toString("base64");
     }
 
+    const existingDomain = await Domain.findOne({ name:req.body.name });
+    if (existingDomain && existingDomain._id.toString() !== req.params.id) {
+      return res.status(400).json({ error: "Name already taken" });
+    }
+
     const newDomain = new Domain({ ...req.body, image: imageURL1 || "", bigImage:imageURL2||"" });
     await newDomain.save();
     res.status(201).json(newDomain);
@@ -116,6 +121,11 @@ const editDomain = async (req, res) => {
       imageURL2 = "data:image/jpeg;base64," + compressedImageBuffer2.toString("base64");
     }
 
+    const existingDomain = await Domain.findOne({ name:req.body.name });
+    if (existingDomain && existingDomain._id.toString() !== req.params.id) {
+      return res.status(400).json({ error: "Name already taken" });
+    }
+    
     const updatedDomain = await Domain.findByIdAndUpdate(
       req.params.id,
       { ...req.body, image: imageURL1 || '', bigImage:imageURL2||"" },

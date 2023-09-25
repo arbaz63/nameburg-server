@@ -28,7 +28,6 @@ router.post(
   "/",
   authenticateToken,
   isAdmin,
-  checkNameAvailability,
   upload.single("image"),
   domainController.addDomain
 );
@@ -39,7 +38,6 @@ router.put(
   authenticateToken,
   isAdmin,
   upload.single("image"),
-  checkNameAvailability,
   domainController.editDomain
 );
 
