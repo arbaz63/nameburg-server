@@ -67,7 +67,7 @@ const addDomain = async (req, res) => {
 
     const newDomain = new Domain({ ...req.body, image: imageURL1 || "", bigImage:imageURL2||"" });
     await newDomain.save();
-    res.status(201).json(newDomain);
+    res.status(201).json({success:true});
   } catch (error) {
     res.status(400).json({ message: `Error creating domain ${error}` });
   }
